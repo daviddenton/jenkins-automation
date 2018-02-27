@@ -6,5 +6,6 @@
 *.iml
 out
 gen
-.gitignore
 .idea/
+.gradle
+build/
