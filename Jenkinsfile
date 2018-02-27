@@ -16,10 +16,10 @@ volumes: [
     def gitBranch = myRepo.GIT_BRANCH
     def shortGitCommit = "${gitCommit[0..10]}"
     def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
- 
-    stage('Run kubectl') {
-      container('kubectl') {
-        sh "kubectl get pods"
+
+    stage('Run docker') {
+      container('docker') {
+        sh "docker run hello-world"
       }
     }
   }
