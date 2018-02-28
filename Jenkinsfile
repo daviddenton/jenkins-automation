@@ -26,6 +26,7 @@ podTemplate(label: label, containers: [
         }
         stage('Run helm') {
             container('helm') {
+                sh "helm init"
                 sh "helm fetch stable/redis"
             }
         }
