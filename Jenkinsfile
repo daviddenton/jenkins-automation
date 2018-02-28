@@ -13,10 +13,6 @@ podTemplate(label: label, containers: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]) {
     node(label) {
-        def repo = checkout scm
-        def gitCommit = repo.GIT_COMMIT
-        def shortGitCommit = "${gitCommit[0..10]}"
-
         stage('Run docker') {
             container('docker') {
                 sh "docker run hello-world"
@@ -25,7 +21,7 @@ podTemplate(label: label, containers: [
         stage('Run helm') {
             container('helm') {
                 sh "helm init"
-                sh "helm install --name=redis stable/redis"
+                sh "helm upgrade --install --name=redis stable/redis"
             }
         }
     }
