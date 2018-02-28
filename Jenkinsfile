@@ -25,7 +25,7 @@ podTemplate(label: label, containers: [
         stage('Run helm') {
             container('helm') {
                 sh "helm init"
-                sh "helm install --name=redis-$shortGitCommit stable/redis"
+                sh "helm install --name=redis stable/redis"
             }
         }
     }
