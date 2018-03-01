@@ -22,11 +22,13 @@ podTemplate(label: label, containers: [
                 string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
         ]) {
             stage('Build image and push to registry') {
-                container('docker') {
-                    sh "ls"
-                    sh "docker build -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} jenkins-automation/Dockerfile"
-                    sh "docker login -u AWS -p ${awsEcrPassword} https://${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com"
-                    sh "docker push -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} ."
+                dir('jenkins-automation') {
+                    checkout scm
+                    container('docker') {
+                        sh "docker build -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} jenkins-automation/Dockerfile"
+                        sh "docker login -u AWS -p ${awsEcrPassword} https://${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com"
+                        sh "docker push -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} ."
+                    }
                 }
             }
         }
