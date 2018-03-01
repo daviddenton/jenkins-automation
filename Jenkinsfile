@@ -2,6 +2,10 @@
 
 def label = "worker-${UUID.randomUUID().toString()}"
 
+def version = "latest"
+def imageName = "myImage"
+def region = "eu-west-2"
+
 podTemplate(label: label, containers: [
         containerTemplate(name: 'gradle', image: 'gradle:4.5.1-jdk9', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
@@ -13,12 +17,20 @@ podTemplate(label: label, containers: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]) {
     node(label) {
-        stage('Run docker') {
-            container('docker') {
-                sh "docker run hello-world"
+        withCredentials([
+                string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
+                string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
+        ]) {
+            stage('Build image and push to registry') {
+                container('docker') {
+                    sh "docker build -t $awsAccountNumber.dkr.ecr.$region.amazonaws.com/$imageName:$version ."
+                    sh "docker login -u AWS -p $awsEcrPassword https://$awsAccountNumber.dkr.ecr.$region.amazonaws.com"
+                    sh "docker push -t $awsAccountNumber.dkr.ecr.$region.amazonaws.com/$imageName:$version ."
+                }
             }
         }
-        stage('Run helm') {
+
+        stage('Deploy to k8s') {
             container('helm') {
                 sh "helm init"
                 sh "helm upgrade --install redis stable/redis"
