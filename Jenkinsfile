@@ -21,7 +21,7 @@ podTemplate(label: label, containers: [
         stage('Run helm') {
             container('helm') {
                 sh "helm init"
-                sh "helm upgrade --install --name=redis stable/redis"
+                sh "helm upgrade --install redis stable/redis"
             }
         }
     }
