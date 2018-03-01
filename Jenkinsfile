@@ -3,7 +3,7 @@
 def label = "worker-${UUID.randomUUID().toString()}"
 
 def version = "latest"
-def imageName = "myImage"
+def imageName = "myimage"
 def region = "eu-west-2"
 
 podTemplate(label: label, containers: [
