@@ -31,7 +31,7 @@ podTemplate(label: label, containers: [
 
                     withAWS(credentials:'aws_credentials') {
                         sh ecrLogin()
-                        sh "docker push -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} ."
+                        sh "docker push ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
                     }
                 }
             }
