@@ -17,12 +17,14 @@ podTemplate(label: label, containers: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]) {
     node(label) {
+
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/daviddenton/jenkins-automation']]])
+
         withCredentials([
                 string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
                 string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
         ]) {
             stage('Build image and push to registry') {
-                checkout scm
                 container('docker') {
                     sh "docker build -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} ."
                     sh "docker login -u AWS -p ${awsEcrPassword} https://${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com"
