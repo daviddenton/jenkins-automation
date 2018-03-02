@@ -1,0 +1,7 @@
+name: dsp
+description: Deploy a basic DSP
+home: https://github.com/daviddenton/jenkins-automation
+sources:
+  - https://github.com/daviddenton/jenkins-automation
+version: 0.0.1
+appVersion: 0.0.1
