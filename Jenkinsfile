@@ -3,7 +3,7 @@
 def label = "worker-${UUID.randomUUID().toString()}"
 
 def version = "latest"
-def imageName = "myimage"
+def imageName = "dsp"
 def region = "eu-west-2"
 
 podTemplate(label: label, containers: [
@@ -27,7 +27,7 @@ podTemplate(label: label, containers: [
         ]) {
             stage('Build image and push to registry') {
                 container('docker') {
-                    def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/dsp/${imageName}:${version}"
+                    def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
                     sh "docker build -t ${imageTag} ."
 
                     withAWS(credentials:'aws_credentials') {
