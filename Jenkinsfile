@@ -27,11 +27,12 @@ podTemplate(label: label, containers: [
         ]) {
             stage('Build image and push to registry') {
                 container('docker') {
-                    sh "docker build -t ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version} ."
+                    def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/dsp/${imageName}:${version}"
+                    sh "docker build -t ${imageTag} ."
 
                     withAWS(credentials:'aws_credentials') {
                         sh ecrLogin()
-                        sh "docker push ${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
+                        sh "docker push ${imageTag}"
                     }
                 }
             }
